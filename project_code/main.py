@@ -58,47 +58,47 @@ def fit_best_models(X, t, y, model_num='', default_models=False):
 
         nca_model2 = NCAMModel(n_components=2, max_iter=300, verobose=1, n_neighbors=-1, n_jobs=None)
         nca_model2.fit(X, y)
-        nca_model2.save_model(f'nca_model_model2.pkl')
+        nca_model2.save_model(f'../nca_model_model2.pkl')
 
         nca_model = NCAMModel(n_components=10, max_iter=100, verobose=1, n_neighbors=-1, n_jobs=None)
         nca_model.fit(X, y)
-        nca_model.save_model(f'nca_model_model10.pkl')
+        nca_model.save_model(f'../nca_model_model10.pkl')
 
         nca_model = NCAMModel(n_components=20, max_iter=100, verobose=1, n_neighbors=-1, n_jobs=None)
         nca_model.fit(X, y)
-        nca_model.save_model(f'nca_model_model20.pkl')
+        nca_model.save_model(f'../nca_model_model20.pkl')
 
         nca_model = NCAMModel(n_components=30, max_iter=100, verobose=1, n_neighbors=-1, n_jobs=None)
         nca_model.fit(X, y)
-        nca_model.save_model(f'nca_model_model30.pkl')
+        nca_model.save_model(f'../nca_model_model30.pkl')
 
     propensity_model.fit(X, t, **kwargs)
-    propensity_model.save_model(f'models/propensity_model{model_num}.pkl')
+    propensity_model.save_model(f'../models/propensity_model{model_num}.pkl')
 
     Xt = pd.concat([X, t], axis=1)
     s_learner_model.fit(Xt, y, **kwargs)
-    s_learner_model.save_model(f'models/s_learner_model{model_num}.pkl')
+    s_learner_model.save_model(f'../models/s_learner_model{model_num}.pkl')
 
     t_learner_model0.fit(X[t == 0], y[t == 0], **kwargs)
-    t_learner_model0.save_model(f'models/t_learner_model0{model_num}.pkl')
+    t_learner_model0.save_model(f'../models/t_learner_model0{model_num}.pkl')
 
     t_learner_model1.fit(X[t == 1], y[t == 1], **kwargs)
-    t_learner_model1.save_model(f'models/t_learner_model1{model_num}.pkl')
+    t_learner_model1.save_model(f'../models/t_learner_model1{model_num}.pkl')
 
 
 def get_fitted_best_model(model_num=''):
     propensity_model = bms.BestModel()
-    propensity_model.load_model(f'models/propensity_model{model_num}.pkl')
+    propensity_model.load_model(f'../models/propensity_model{model_num}.pkl')
     s_learner_model = bms.BestModel()
-    s_learner_model.load_model(f'models/s_learner_model{model_num}.pkl')
+    s_learner_model.load_model(f'../models/s_learner_model{model_num}.pkl')
     t_learner_model0 = bms.BestModel()
-    t_learner_model0.load_model(f'models/t_learner_model0{model_num}.pkl')
+    t_learner_model0.load_model(f'../models/t_learner_model0{model_num}.pkl')
     t_learner_model1 = bms.BestModel()
-    t_learner_model1.load_model(f'models/t_learner_model1{model_num}.pkl')
-    nca_model2 = NCAMModel.load_model('models/nca_model_model2.pkl')
-    nca_model10 = NCAMModel.load_model('models/nca_model_model10.pkl')
-    nca_model20 = NCAMModel.load_model('models/nca_model_model20.pkl')
-    nca_model30 = NCAMModel.load_model('models/nca_model_model30.pkl')
+    t_learner_model1.load_model(f'../models/t_learner_model1{model_num}.pkl')
+    nca_model2 = NCAMModel.load_model('../models/nca_model_model2.pkl')
+    nca_model10 = NCAMModel.load_model('../models/nca_model_model10.pkl')
+    nca_model20 = NCAMModel.load_model('../models/nca_model_model20.pkl')
+    nca_model30 = NCAMModel.load_model('../models/nca_model_model30.pkl')
     return propensity_model, s_learner_model, t_learner_model0, t_learner_model1, \
            nca_model2, nca_model10, nca_model20, nca_model30
 
@@ -108,8 +108,8 @@ def train_models(data, iterations):
         model_num = f'_{i}'
         data_train, data_test = train_test_split(data, test_size=0.5)
         print(data_train.shape)
-        data_train.to_csv(f'data/data_train{model_num}.csv',index=False)
-        data_test.to_csv(f'data/data_test{model_num}.csv', index=False)
+        data_train.to_csv(f'../data/data_train{model_num}.csv',index=False)
+        data_test.to_csv(f'../data/data_test{model_num}.csv', index=False)
         X, t, y = prepare_data(data_train)
         fit_best_models(X, t, y, model_num=model_num)
 
@@ -173,8 +173,8 @@ def test_models(iterations):
     results = []
     for i in range(iterations):
         model_num = f'_{i}'
-        data_train = pd.read_csv(f'data/data_train{model_num}.csv')
-        data_test = pd.read_csv(f'data/data_test{model_num}.csv')
+        data_train = pd.read_csv(f'../data/data_train{model_num}.csv')
+        data_test = pd.read_csv(f'../data/data_test{model_num}.csv')
         print(data_train.shape, data_test.shape)
         X_train, t_train, y_train = prepare_data(data_train)
         results.append(get_models_results(str(i), True, X_train, t_train, y_train))
@@ -184,7 +184,7 @@ def test_models(iterations):
 
 
 if __name__ == '__main__':
-    data = pd.read_csv('casual_diabetes.csv')
+    data = pd.read_csv('../data/casual_diabetes.csv')
     print(data.shape)
     data = data[(data[T] != 'other') & (data['age:[0-10)'] == 0)]
     print(data.shape)
@@ -192,4 +192,4 @@ if __name__ == '__main__':
     train_models(data, iterations)
     results = test_models(iterations)
     print(results.shape)
-    results.to_csv('models_results.csv', index=False)
+    results.to_csv('../data/models_results.csv', index=False)
